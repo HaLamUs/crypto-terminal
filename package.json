@@ -12,7 +12,9 @@
     "hello": "./bin/index.js"
   },
   "dependencies": {
+    "assert-plus": "^1.0.0",
     "axios": "^1.3.4",
+    "bignumber.js": "^9.1.1",
     "yargs": "^17.7.1"
   }
 }
