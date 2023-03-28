@@ -12,7 +12,7 @@ portfolioService.build = async params => {
   const res = await axios.get(url);
   const price = res.data
   var userData = {};
-  Object.keys(params).forEach(key => {
+  Object.keys(params).map(key => {
     userData[key] = '$' + bigNumber(params[key]).multiply(price[key].USD).toValue();
   });
   setTimeout(() => {
@@ -30,9 +30,28 @@ portfolioService.build2 = async params => {
   const res = await axios.get(url);
   const price = res.data
   var userData = {};
-  Object.keys(filtered).forEach(key => {
+  Object.keys(filtered).map(key => {
     userData[key] = '$' + bigNumber(filtered[key]).multiply(price[key].USD).toValue();
   });
+  setTimeout(() => {
+    stopSpinner()
+  }, 0);
+  console.clear();
+  console.log(`YOUR PORTFOLIO \n`)
+  console.table(userData)
+}
+
+portfolioService.build3 = async params => {
+  const stopSpinner = startSpinner();
+  const { timeStamp, filtered } = params;
+  var userData = {};
+  const promises = Object.keys(filtered).map(async key => {
+    const url = constants.URL + "/data/pricehistorical?tsyms=USD&fsym=" + key + '&ts=' + timeStamp;
+    const res = await axios.get(url);
+    const price = res.data
+    userData[key] = '$' + bigNumber(filtered[key]).multiply(price[key].USD).toValue();
+  });
+  await Promise.all(promises);
   setTimeout(() => {
     stopSpinner()
   }, 0);

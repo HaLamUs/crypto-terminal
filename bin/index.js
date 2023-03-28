@@ -15,10 +15,12 @@ const options = yargs
   .argv;
 
 const params = {"BTC": 2.2332, "ETH": 0.0023212}
+var filtered = params;
+var timeStamp = 0;
 if(options.token) {
   console.log(`\n The token you requested is: ${options.token}`);
   const allowed = Array(options.token.toUpperCase());
-  const filtered = Object.keys(params)
+  filtered = Object.keys(params)
     .filter(key => allowed.includes(key))
     .reduce((obj, key) => {
       obj[key] = params[key];
@@ -26,20 +28,30 @@ if(options.token) {
     }, {});
   if (_.isEmpty(filtered)) {
     console.log(`\n 404: Token not found!`);
+    return;
   }
-  else if(options.date && options.token) {
-    console.log(`\n The date you requested is: ${options.date} token ${options.token}`);
-    const timeStamp = dateTimeUtils.getTimestamp(options.date);
-    if (timeStamp < 0) {
-      console.log(`\n 400: Invalid date!`);
-    }
-    else {
-      portfolioService.build2({ timeStamp, token: options.token, filtered })
-    }
-  }
-  else {
+  if (_.isNil(options.date)) {
+    console.log(`\n ONLY token`);
     portfolioService.build(filtered);
+    return;
   }
+}
+if(options.date) {
+  console.log(`\n This is the date time `);
+  timeStamp = dateTimeUtils.getTimestamp(options.date.toString());
+  if (timeStamp < 0) {
+    console.log(`\n 400: Invalid date!`);
+    return;
+  }
+  if (_.isNil(options.token)) {
+    console.log(`\n ONLY date`);
+    portfolioService.build3({ timeStamp, filtered })
+    return;
+  }
+}
+if(options.date && options.token) {
+  console.log(`\n both token and date`);
+  portfolioService.build2({ timeStamp, token: options.token, filtered })
 }
 else {
   portfolioService.build(params);
