@@ -58,7 +58,7 @@ profile.load = async callback => {
     });
     return;
   }
-  if(fs.existsSync('./data/transactions.csv')) {
+  if(!fs.existsSync('./data/transactions.csv')) {
     console.log(`\n ERROR: Please add transactions.csv in data folder`);
     return;
   }

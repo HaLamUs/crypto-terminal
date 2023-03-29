@@ -10,7 +10,7 @@ const options = yargs
     Usage: 
     -t <token> return the latest portfolio value for that token in USD
     -d <date> return the portfolio value per token in USD on that date
-    -t -d <token and date> return the portfolio value of that token in USD on that date`)
+    -t -d <token and date> return the portfolio token value in USD by given date`)
   .option("t", { alias: "token", describe: "Token you want to check", type: "string" })
   .option("d", { alias: "date", describe: "Date you want to check", type: "string" })
   .argv;
