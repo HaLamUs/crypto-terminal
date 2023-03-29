@@ -2,10 +2,11 @@
 const yargs = require("yargs");
 const _ = require('lodash');
 const portfolioService = require('../sources/portfolio/');
+const profile = require('../sources/profile/');
 const dateTimeUtils = require('../sources/helpers/dateTimeHelpers');
 
 const options = yargs
-  .usage(`Blank arg return the latest portfolio value per token in USD 
+  .usage(`Default return the latest portfolio value per token in USD 
     Usage: 
     -t <token> return the latest portfolio value for that token in USD
     -d <date> return the portfolio value per token in USD on that date
@@ -14,46 +15,52 @@ const options = yargs
   .option("d", { alias: "date", describe: "Date you want to check", type: "string" })
   .argv;
 
-const params = {"BTC": 2.2332, "ETH": 0.0023212}
-var filtered = params;
-var timeStamp = 0;
-if(options.token) {
-  console.log(`\n The token you requested is: ${options.token}`);
-  const allowed = Array(options.token.toUpperCase());
-  filtered = Object.keys(params)
-    .filter(key => allowed.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = params[key];
-      return obj;
-    }, {});
-  if (_.isEmpty(filtered)) {
-    console.log(`\n 404: Token not found!`);
-    return;
+var main = (balance) => {
+  var filtered = balance;
+  var timeStamp = 0;
+  if(options.token) {
+    console.log(`\n The token you requested is: ${options.token}`);
+    const allowed = Array(options.token.toUpperCase());
+    filtered = Object.keys(balance)
+      .filter(key => allowed.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = balance[key];
+        return obj;
+      }, {});
+    if (_.isEmpty(filtered)) {
+      console.log(`\n 404: Token not found!`);
+      return;
+    }
+    if (_.isNil(options.date)) {
+      console.log(`\n ONLY token`);
+      portfolioService.build(filtered);
+      return;
+    }
   }
-  if (_.isNil(options.date)) {
-    console.log(`\n ONLY token`);
-    portfolioService.build(filtered);
-    return;
+  if(options.date) {
+    console.log(`\n This is the date time `);
+    timeStamp = dateTimeUtils.getTimestamp(options.date.toString());
+    if (timeStamp < 0) {
+      console.log(`\n 400: Invalid date!`);
+      return;
+    }
+    if (_.isNil(options.token)) {
+      console.log(`\n ONLY date`);
+      portfolioService.build3({ timeStamp, filtered })
+      return;
+    }
   }
-}
-if(options.date) {
-  console.log(`\n This is the date time `);
-  timeStamp = dateTimeUtils.getTimestamp(options.date.toString());
-  if (timeStamp < 0) {
-    console.log(`\n 400: Invalid date!`);
-    return;
+  if(options.date && options.token) {
+    console.log(`\n both token and date`);
+    portfolioService.build2({ timeStamp, token: options.token, filtered })
   }
-  if (_.isNil(options.token)) {
-    console.log(`\n ONLY date`);
-    portfolioService.build3({ timeStamp, filtered })
-    return;
+  else {
+    portfolioService.build(balance);
+    console.log(`\n log ${JSON.stringify(options)}`);
   }
-}
-if(options.date && options.token) {
-  console.log(`\n both token and date`);
-  portfolioService.build2({ timeStamp, token: options.token, filtered })
-}
-else {
-  portfolioService.build(params);
-  console.log(`\n log ${JSON.stringify(options)}`);
-}
+
+
+};
+
+profile.load(main);
+

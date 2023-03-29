@@ -56,3 +56,5 @@ api.json
 
 .terraform
 .terraform.*
+
+/data
