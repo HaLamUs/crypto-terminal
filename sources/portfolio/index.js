@@ -2,7 +2,6 @@ const axios = require("axios");
 const constants = require('../global/');
 const bigNumber = require('../helpers/bigNumber');
 const startSpinner = require('../helpers/loading');
-const dateTimeUtils = require('../helpers/dateTimeHelpers');
 
 const portfolioService = module.exports;
 
@@ -23,7 +22,7 @@ portfolioService.build = async params => {
   console.table(userData)
 }
 
-portfolioService.build2 = async params => {
+portfolioService.buildWithFilter = async params => {
   const stopSpinner = startSpinner();
   const { token, timeStamp, filtered } = params;
   const url = constants.URL + "/data/pricehistorical?tsyms=USD&fsym=" + token + '&ts=' + timeStamp;
@@ -41,7 +40,7 @@ portfolioService.build2 = async params => {
   console.table(userData)
 }
 
-portfolioService.build3 = async params => {
+portfolioService.buildByDate = async params => {
   const stopSpinner = startSpinner();
   const { timeStamp, filtered } = params;
   var userData = {};

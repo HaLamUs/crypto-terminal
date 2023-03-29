@@ -19,7 +19,6 @@ var main = (balance) => {
   var filtered = balance;
   var timeStamp = 0;
   if(options.token) {
-    console.log(`\n The token you requested is: ${options.token}`);
     const allowed = Array(options.token.toUpperCase());
     filtered = Object.keys(balance)
       .filter(key => allowed.includes(key))
@@ -32,35 +31,27 @@ var main = (balance) => {
       return;
     }
     if (_.isNil(options.date)) {
-      console.log(`\n ONLY token`);
       portfolioService.build(filtered);
       return;
     }
   }
   if(options.date) {
-    console.log(`\n This is the date time `);
     timeStamp = dateTimeUtils.getTimestamp(options.date.toString());
     if (timeStamp < 0) {
       console.log(`\n 400: Invalid date!`);
       return;
     }
     if (_.isNil(options.token)) {
-      console.log(`\n ONLY date`);
-      portfolioService.build3({ timeStamp, filtered })
+      portfolioService.buildByDate({ timeStamp, filtered })
       return;
     }
   }
   if(options.date && options.token) {
-    console.log(`\n both token and date`);
-    portfolioService.build2({ timeStamp, token: options.token, filtered })
+    portfolioService.buildWithFilter({ timeStamp, token: options.token, filtered })
   }
   else {
     portfolioService.build(balance);
-    console.log(`\n log ${JSON.stringify(options)}`);
   }
-
-
 };
 
 profile.load(main);
-
