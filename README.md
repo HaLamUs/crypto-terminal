@@ -76,7 +76,7 @@ I can not find the history api whose param is a token array so I loop the token 
 https://user-images.githubusercontent.com/9162651/228614152-c0f79728-ebc7-4ed0-a036-47c24a4bbf8c.mov
 
 
-
+<p><img type="separator" height=8px width="100%" src="https://github.com/HaLamUs/nft-drop/blob/main/assets/aqua.png"></p>
 
 ## Author
 
